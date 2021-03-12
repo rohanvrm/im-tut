@@ -41,6 +41,7 @@ const styles =theme => ({
     },
     errorText: {
       color: 'red',
+     
       textAlign: 'center'
     }
   });
