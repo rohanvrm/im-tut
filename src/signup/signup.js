@@ -73,7 +73,7 @@ class signupComponent extends React.Component{
 
                         {
 
-                            this.state.signupError ? <Typography className='classes.errorText'   component='h5'  align='center' variant='h6'>
+                            this.state.signupError ? <Typography className={classes.errorText}   component='h5'  align='center' variant='h6'>
                                 {this.state.signupError}
                             </Typography>  : null
                         }
