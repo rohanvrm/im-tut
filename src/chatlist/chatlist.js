@@ -16,11 +16,85 @@ class ChatListComponent extends React.Component{
 
     render() {
 
-        return(
+        const {classes} = this.props;
+        if(this.props.chats.length > 0)
+        {
+            return(
+                <main
+                        className={classes.root}>
+                <Button variant="contained" 
+                  fullWidth 
+                  color='primary' 
+                  onClick={this.newChat} 
+                  className={classes.newChatBtn}
+                  onClick={this.newChat}>
+                    New Chat
+                </Button>
+                <List>
+                    {
+                    this.props.chats.map((_chat,_index)=>{
+                        return(
+                            <div key={_index}>
+                                <ListItem onClick={()=> this.selectChat(_index)} 
+                                classname={classes.listItem}
+                                selected={this.props.selectChatIndex === _index}
+                                alignItems='flex-start'>
+                             <ListItemAvatar>
+                              <Avatar alt="Remy Sharp">
+                                  {_chat.users.filter(_user => _user !== this.props.userEmail)[0].split('')[0]}
+                                </Avatar>
+                            </ListItemAvatar>
+    
+                            <ListItemText 
+                              primary={_chat.users.filter(_user => _user !== this.props.userEmail)[0]}
+                              secondary={
+                                <React.Fragment>
+                                  <Typography component='span'
+                                    color='textPrimary'>
+                                      {_chat.messages[_chat.messages.length - 1].message.substring(0, 30) + ' ...'}
+                                  </Typography>
+                                </React.Fragment>
+                              }/>
+                              {
+                                _chat.receiverHasRead === false && !this.userIsSender(_chat) ? 
+                                <ListItemIcon><NotificationImportant className={classes.unreadMessage}></NotificationImportant></ListItemIcon> :
+                                null
+                              }
+                            </ListItem>
+                            <Divider>
+                                
+                            </Divider>
+                            </div>
+                        )
+    
+                    })
+                    }
+                </List>
+                </main>
+            );
+        } else {
+            return(
+            <div className={classes.root}>
+              <Button variant="contained" 
+                fullWidth 
+                color='primary' 
+                onClick={this.newChat} 
+                className={classes.newChatBtn}>
+                  New Message
+              </Button>
+              <List></List>
+            </div>
+          );
+        }
+        
+    }
 
-            <div>
-                HELLO FROM CHAT LIST : {this.props.customProp}
-            </div>);
+    newChat=()=>{ 
+        console.log('new chat click');
+    }
+
+    selectChat=(index)=>{
+        console.log('select chat',index);
     }
 }
 

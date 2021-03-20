@@ -21,7 +21,7 @@ class dashboardComponent extends React.Component{
         {
             return(
         <div>
-            <div> Hello world DASHBOARD PAGE</div>)
+            
             <ChatListComponent history={this.props.history}
                 newChatBtnFn={this.newChatBtnClicked}
 
@@ -44,9 +44,9 @@ class dashboardComponent extends React.Component{
 
         newChatBtnClicked=()=> this.setState({newChatFormVisible: true,selectedChat:null})
 
-        componentWillMount = () => {
+        componentWillMount = () => {            
             firebase.auth().onAuthStateChanged(async _usr => {
-              if(!_usr)
+              if(!_usr)     //if user doesnt exist 
                 this.props.history.push('/login');
               else {
                 await firebase
@@ -60,6 +60,7 @@ class dashboardComponent extends React.Component{
                       chats: chats,
                       friends: []
                     });
+                    console.log(this.state);
                   })
               }
           });
