@@ -70,6 +70,7 @@ class ChatListComponent extends React.Component{
                     })
                     }
                 </List>
+                 
                 </main>
             );
         } else {
@@ -86,7 +87,7 @@ class ChatListComponent extends React.Component{
             </div>
           );
         }
-        
+
     }
 
     newChat=()=>{ 
