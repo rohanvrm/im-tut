@@ -1,8 +1,8 @@
 import React from 'react';
 import ChatListComponent from '../chatlist/chatlist'
 //import NewChatComponent from '../NewChat/newChat';
-//import ChatViewComponent from '../ChatView/chatView';
-//import ChatTextBoxComponent from '../ChatTextBox/chatTextBox';
+import ChatViewComponent from '../chatview/chatView';
+import ChatTextBoxComponent from '../chattextbox/chatTextBox';
 import styles from './styles';
 import { Button, withStyles } from '@material-ui/core';
 import firebase from '@firebase/app';
@@ -38,6 +38,24 @@ class dashboardComponent extends React.Component{
                 >
                 
             </ChatListComponent>
+           
+            {
+              this.state.newChatFormVisible ?
+               null : <ChatViewComponent user={this.state.email} 
+               chat={this.state.chats[this.state.selectedChat]}>
+                  
+               </ChatViewComponent>
+            }
+            
+               
+            {
+               this.state.selectedChat !== null && 
+               !this.state.newChatFormVisible ?
+                <ChatTextBoxComponent
+                 userClickedInputFn={this.messageRead} submitMessageFn={this.submitMessage}>
+
+                 </ChatTextBoxComponent> : null
+            }
             
               <Button className={classes.signOutBtn}  onClick={this.signOut}>
                   Sign out ! 
@@ -50,12 +68,36 @@ class dashboardComponent extends React.Component{
         signOut = () => firebase.auth().signOut();
 
         selectChat=(chatIndex)=> {
-            console.log('Select a Chat',chatIndex);
+         // console.log('index :', chatIndex);
+            this.setState({selectedChat:chatIndex})
         }
+
+        submitMessage = (msg) => {
+          const docKey = this.buildDocKey(this.state.chats[this.state.selectedChat]
+            .users
+            .filter(_usr => _usr !== this.state.email)[0])
+          firebase
+            .firestore()
+            .collection('chats')
+            .doc(docKey)
+            .update({
+              messages: firebase.firestore.FieldValue.arrayUnion({
+                sender: this.state.email,
+                message: msg,
+                timestamp: Date.now()
+              }),
+              receiverHasRead: false
+            });
+        }
+
+        // Always in alphabetical order:
+  // 'user1:user2'
+  buildDocKey = (friend) => [this.state.email, friend].sort().join(':');
+        
 
         newChatBtnClicked=()=> this.setState({newChatFormVisible: true,selectedChat:null})
 
-        componentWillMount = () => {            
+        componentDidMount = () => {            
             firebase.auth().onAuthStateChanged(async _usr => {
               if(!_usr)     //if user doesnt exist 
                 this.props.history.push('/login');
